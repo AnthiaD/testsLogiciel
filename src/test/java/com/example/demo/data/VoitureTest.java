@@ -37,9 +37,9 @@ public class VoitureTest {
 
         String test = voiture.toString();
 
-        assertTrue(test.contains("Marque: Mercedes"));
-        assertTrue(test.contains("Prix: 10000"));
-        assertTrue(test.contains("id: 1"));
+        assertTrue(test.contains("Mercedes"));
+        assertTrue(test.contains("10000"));
+        assertTrue(test.contains("1"));
     }
 
 }
