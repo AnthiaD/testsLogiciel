@@ -1,6 +1,5 @@
 package com.example.demo.web;
 
-import com.example.demo.data.Voiture;
 import com.example.demo.service.Echantillon;
 import com.example.demo.service.StatistiqueImpl;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -27,4 +25,26 @@ class WebTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Test
+    void creerVoiture() throws Exception {
+        mockMvc.perform(post("/voiture")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"marque\":\"Ferrari\",\"prix\":5000}"))
+                .andExpect(status().isOk());
+
+        verify(statistiqueImpl, times(1)).ajouter(any());
+    }
+
+    @Test
+    void getStatistiques() throws Exception {
+        when(statistiqueImpl.prixMoyen())
+                .thenReturn(new Echantillon(2, 7500));
+
+        mockMvc.perform(get("/statistique"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombreDeVoitures").value(2))
+                .andExpect(jsonPath("$.prixMoyen").value(7500));
+
+        verify(statistiqueImpl, times(1)).prixMoyen();
+    }
 }
